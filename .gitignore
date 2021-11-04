@@ -1,0 +1,15 @@
+Makefile
+configure
+pkgIndex.tcl
+tclconfig
+dedupConfig.sh
+generic/dedup.h
+autom4te.cache
+config.log
+config.status
+tags
+*.so
+*.o
+*.a
+*.swp
+doc/dedup.n

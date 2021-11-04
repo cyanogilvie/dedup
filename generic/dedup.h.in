@@ -1,0 +1,29 @@
+#include <tcl.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#ifdef BUILD_dedup
+#undef TCL_STORAGE_CLASS
+#define TCL_STORAGE_CLASS DLLEXPORT
+#endif
+
+typedef void dedup_pool;
+
+/* Stubs exported API */
+
+#ifdef USE_DEDUP_STUBS
+extern const char* DedupInitializeStubs(Tcl_Interp* interp);
+#define Dedup_InitStubs(interp)	DedupInitializeStubs((interp))
+#else
+#define Dedup_InitStubs(interp)	Tcl_PkgRequire((interp), "@PACKAGE_NAME@", "@PACKAGE_VERSION@", 0)
+#endif
+
+#include "dedupDecls.h"
+
+EXTERN int Dedup_Init _ANSI_ARGS_((Tcl_Interp * interp));
+
+#ifdef __cplusplus
+}
+#endif
