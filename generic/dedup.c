@@ -124,7 +124,7 @@ void Dedup_FreePool(struct dedup_pool* p) //<<<
 Tcl_Obj* Dedup_NewStringObj(struct dedup_pool* p, const char* bytes, int length) //<<<
 {
 	char				buf[STRING_DEDUP_MAX + 1];
-	const char			*keyname;
+	const char*			keyname;
 	int					is_new;
 	struct kc_entry*	kce;
 	Tcl_Obj*			out;

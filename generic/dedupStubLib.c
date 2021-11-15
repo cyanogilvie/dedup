@@ -12,8 +12,6 @@ const DedupStubs*					dedupStubsPtr = NULL;
 MODULE_SCOPE const char* DedupInitializeStubs(Tcl_Interp* interp)
 {
 	const char*	got = NULL;
-	fprintf(stderr, "In DedupInitializeStubs, verion: (%s)\n", PACKAGE_VERSION);
 	got = Tcl_PkgRequireEx(interp, PACKAGE_NAME, PACKAGE_VERSION, 0, &dedupStubsPtr);
-	fprintf(stderr, "Got ver: (%s), dedupStubsPtr: %p\n", got, dedupStubsPtr);
 	return got;
 }
