@@ -1,3 +1,5 @@
+#ifndef _DEDUP_H
+#define _DEDUP_H
 #include <tcl.h>
 
 #ifdef __cplusplus
@@ -26,4 +28,5 @@ EXTERN int Dedup_Init _ANSI_ARGS_((Tcl_Interp * interp));
 
 #ifdef __cplusplus
 }
+#endif
 #endif

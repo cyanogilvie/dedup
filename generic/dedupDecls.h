@@ -1,3 +1,5 @@
+#ifndef _DEDUPDECLS_H
+#define _DEDUPDECLS_H
 
 /* !BEGIN!: Do not edit below this line. */
 
@@ -53,3 +55,4 @@ extern const DedupStubs *dedupStubsPtr;
 #endif /* defined(USE_DEDUP_STUBS) */
 
 /* !END!: Do not edit above this line. */
+#endif
