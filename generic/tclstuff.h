@@ -107,4 +107,6 @@ static inline void replace_tclobj(Tcl_Obj** target, Tcl_Obj* replacement)
 #	define TIME(label, task) task
 #endif
 
+#define OBJCMD(name)	int (name)(ClientData cdata, Tcl_Interp* interp, int objc, Tcl_Obj *const objv[])
+
 #endif

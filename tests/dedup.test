@@ -5,6 +5,54 @@ if {[lsearch [namespace children] ::tcltest] == -1} {
 
 package require dedup
 
+proc ac_config key { #<<<
+	global _ac_config_cache
+	if {![info exists _ac_config_cache($key)]} {
+		set _ac_config_cache($key) [exec echo @$key@ | ./config.status --file=-]
+	}
+	set _ac_config_cache($key)
+}
+
+#>>>
+
+test config-1.1 {Embedded config} -body { #<<<
+	lmap key [lsort [dedup::pkgconfig list]] {
+		list $key [dedup::pkgconfig get $key]
+	}
+} -cleanup {
+	unset -nocomplain key
+} -result [format [list \
+	{header dedup.h} \
+	{includedir,install %2$s} \
+	{includedir,runtime %1$s/generic} \
+	{libdir,install %2$s} \
+	{libdir,runtime %1$s} \
+	{library %3$s} \
+	{packagedir,install %2$s} \
+	{packagedir,runtime %1$s} \
+	{stublib %4$s}\
+] \
+	[pwd] \
+	[ac_config DEDUP_PACKAGE_PATH_INSTALL] \
+	[ac_config DEDUP_LIBRARY] \
+	[ac_config DEDUP_STUBLIB] \
+]
+#>>>
+test dedup-1.1 {Pool lifecycle} -body { #<<<
+	dedup::_pool foo
+	set first	[foo get test-dedup-1.1]
+	set second	[foo get test-dedup-1.1]
+	list \
+		[expr {[tcl::unsupported::representation $first] eq [tcl::unsupported::representation $second]}] \
+		[foo stats]
+} -cleanup {
+	catch {rename foo {}}
+	unset -nocomplain first second
+} -result [list \
+	1 \
+	"refCount:    4, heat:    1, \"test-dedup-1.1\"\nentries:    1" \
+]
+#>>>
 
 # cleanup
 ::tcltest::cleanupTests

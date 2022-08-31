@@ -19,7 +19,7 @@ dnl	to configure the system for the local environment.
 # so that we create the export library with the dll.
 #-----------------------------------------------------------------------
 
-AC_INIT([dedup], [0.9.1])
+AC_INIT([dedup],[0.9.2])
 
 #--------------------------------------------------------------------
 # Call TEA_INIT as the first TEA_ macro to set up initial vars.
@@ -191,6 +191,8 @@ TEA_PROG_TCLSH
 # Setup a *Config.sh.in configuration file.
 #--------------------------------------------------------------------
 
+eval "includedir=\"${libdir}/${PACKAGE_NAME}${PACKAGE_VERSION}\""
+
 TEA_EXPORT_CONFIG([dedup])
 #AC_SUBST(SAMPLE_VAR)
 
@@ -200,7 +202,7 @@ TEA_EXPORT_CONFIG([dedup])
 # substituting the AC variables in. Include these here.
 #--------------------------------------------------------------------
 
-TEAX_CONFIG_INCLUDE_LINE(DEDUP_INCLUDE_SPEC,		[${includedir}])
+TEAX_CONFIG_INCLUDE_LINE(DEDUP_INCLUDE_SPEC,		[${libdir}/${PACKAGE_NAME}${PACKAGE_VERSION}])
 TEAX_CONFIG_LINK_LINE(DEDUP_LIB_SPEC,
 					  [${libdir}/${PACKAGE_NAME}${PACKAGE_VERSION}], [${PACKAGE_NAME}])
 TEAX_CONFIG_LINK_LINE(DEDUP_STUB_LIB_SPEC,
@@ -213,12 +215,38 @@ TEAX_CONFIG_LINK_LINE(DEDUP_BUILD_LIB_SPEC,
 TEAX_CONFIG_LINK_LINE(DEDUP_BUILD_STUB_LIB_SPEC,
 					 [${BUILD_DIR}], [${PACKAGE_NAME}stub])
 
+#eval "DEDUP_INCLUDE_PATH_INSTALL=\"${includedir}\""
+eval "DEDUP_INCLUDE_PATH_INSTALL=\"${libdir}/${PACKAGE_NAME}${PACKAGE_VERSION}\""
+eval "DEDUP_LIBRARY_PATH_INSTALL=\"${libdir}/${PACKAGE_NAME}${PACKAGE_VERSION}\""
+eval "DEDUP_PACKAGE_PATH_INSTALL=\"${libdir}/${PACKAGE_NAME}${PACKAGE_VERSION}\""
+AS_IF([test ${TCL_LIB_VERSIONS_OK} = nodots], [
+	eval "DEDUP_LIBRARY=\"lib${PACKAGE_NAME}${TCL_TRIM_DOTS}\""
+	eval "DEDUP_STUBLIB=\"lib${PACKAGE_NAME}$stub{TCL_TRIM_DOTS}\""
+], [
+	eval "DEDUP_LIBRARY=\"lib${PACKAGE_NAME}${PACKAGE_VERSION}\""
+	eval "DEDUP_STUBLIB=\"lib${PACKAGE_NAME}stub${PACKAGE_VERSION}\""
+])
+DEDUP_HEADER="dedup.h"
+
+AC_DEFINE_UNQUOTED(DEDUP_INCLUDE_PATH_INSTALL, ["$DEDUP_INCLUDE_PATH_INSTALL"])
+AC_DEFINE_UNQUOTED(DEDUP_LIBRARY_PATH_INSTALL, ["$DEDUP_LIBRARY_PATH_INSTALL"])
+AC_DEFINE_UNQUOTED(DEDUP_PACKAGE_PATH_INSTALL, ["$DEDUP_PACKAGE_PATH_INSTALL"])
+AC_DEFINE_UNQUOTED(DEDUP_LIBRARY, ["$DEDUP_LIBRARY"])
+AC_DEFINE_UNQUOTED(DEDUP_STUBLIB, ["$DEDUP_STUBLIB"])
+AC_DEFINE_UNQUOTED(DEDUP_HEADER, ["$DEDUP_HEADER"])
+
+AC_SUBST(DEDUP_INCLUDE_PATH_INSTALL)
+AC_SUBST(DEDUP_LIBRARY_PATH_INSTALL)
+AC_SUBST(DEDUP_PACKAGE_PATH_INSTALL)
+AC_SUBST(DEDUP_LIBRARY)
+AC_SUBST(DEDUP_STUBLIB)
+AC_SUBST(DEDUP_HEADER)
+
 AC_CONFIG_FILES([Makefile pkgIndex.tcl dedupConfig.sh generic/dedup.h])
-#AC_CONFIG_FILES([sampleConfig.sh])
 
 #--------------------------------------------------------------------
 # Finally, substitute all of the various values into the files
 # specified with AC_CONFIG_FILES.
 #--------------------------------------------------------------------
 
-AC_OUTPUT()
+AC_OUTPUT

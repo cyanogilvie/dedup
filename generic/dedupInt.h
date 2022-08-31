@@ -60,9 +60,13 @@ struct dedup_pool {
 	int				kc_count;
 	FREEMAP_TYPE	freemap[(KC_ENTRIES / (8*sizeof(FREEMAP_TYPE)))+1];	// long long for ffsll
 	struct kc_entry	kc_entries[KC_ENTRIES];
-
-	// TODO: copy these in from an interp cx
 	Tcl_Obj*		tcl_empty;
+	Tcl_Interp*		interp;
+};
+
+struct interp_cx {
+	Tcl_Obj*	pools;
+	Tcl_Obj*	empty;
 };
 
 #endif
