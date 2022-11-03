@@ -146,13 +146,15 @@ void Dedup_FreePool(struct dedup_pool* p) //<<<
 
 	if (p->interp) {
 		struct interp_cx*	l = Tcl_GetAssocData(p->interp, ASSOC, NULL);
-		Tcl_Obj*			poolkey = NULL;
+		if (l) {
+			Tcl_Obj*			poolkey = NULL;
 
-		replace_tclobj(&poolkey, Tcl_NewWideIntObj((Tcl_WideInt)p));
-		if (Tcl_IsShared(l->pools)) replace_tclobj(&l->pools, Tcl_DuplicateObj(l->pools));
-		if (TCL_OK != Tcl_DictObjRemove(NULL, l->pools, poolkey))
-			Tcl_Panic("Failed to remove pool from interp pool registry");
-		replace_tclobj(&poolkey, NULL);
+			replace_tclobj(&poolkey, Tcl_NewWideIntObj((Tcl_WideInt)p));
+			if (Tcl_IsShared(l->pools)) replace_tclobj(&l->pools, Tcl_DuplicateObj(l->pools));
+			if (TCL_OK != Tcl_DictObjRemove(NULL, l->pools, poolkey))
+				Tcl_Panic("Failed to remove pool from interp pool registry");
+			replace_tclobj(&poolkey, NULL);
+		}
 	}
 
 	he = Tcl_FirstHashEntry(&p->kc, &search);
