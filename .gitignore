@@ -1,7 +1,6 @@
 Makefile
 configure
 pkgIndex.tcl
-tclconfig
 dedupConfig.sh
 generic/dedup.h
 autom4te.cache
