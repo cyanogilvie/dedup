@@ -404,11 +404,12 @@ static OBJCMD(pool_cmd) //<<<
 	int					code = TCL_OK;
 	struct dedup_pool*	p = NULL;
 
-	CHECK_ARGS(1, "pool_name");
+	enum {A_cmd=0, A_POOL_NAME, A_objc};
+	CHECK_ARGS_LABEL(done, code, "pool_name");
 
 	p = Dedup_NewPool(interp);
 
-	Tcl_CreateObjCommand(interp, Tcl_GetString(objv[1]), poolinst_cmd, p, delete_poolinst);
+	Tcl_CreateObjCommand(interp, Tcl_GetString(objv[A_POOL_NAME]), poolinst_cmd, p, delete_poolinst);
 
 done:
 	return code;

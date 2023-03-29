@@ -12,3 +12,6 @@ tags
 *.a
 *.swp
 doc/dedup.n
+*~
+*.gcda
+*.gcno

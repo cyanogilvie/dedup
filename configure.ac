@@ -19,7 +19,7 @@ dnl	to configure the system for the local environment.
 # so that we create the export library with the dll.
 #-----------------------------------------------------------------------
 
-AC_INIT([dedup],[0.9.4])
+AC_INIT([dedup],[0.9.5])
 
 #--------------------------------------------------------------------
 # Call TEA_INIT as the first TEA_ macro to set up initial vars.
@@ -155,6 +155,7 @@ TEA_CONFIG_CFLAGS
 TIP445
 AC_CHECK_FUNCS_ONCE([ffsll])
 AX_GCC_BUILTIN(__builtin_ffsll)
+TEABASE_INIT()
 
 # Build tools needed on the build host to produce some of the source
 # files.  This macro attempts to set CC_FOR_BUILD to a compiler that
@@ -242,7 +243,7 @@ AC_SUBST(DEDUP_LIBRARY)
 AC_SUBST(DEDUP_STUBLIB)
 AC_SUBST(DEDUP_HEADER)
 
-AC_CONFIG_FILES([Makefile pkgIndex.tcl dedupConfig.sh generic/dedup.h])
+AC_CONFIG_FILES([Makefile teabase/Makefile pkgIndex.tcl dedupConfig.sh generic/dedup.h])
 
 #--------------------------------------------------------------------
 # Finally, substitute all of the various values into the files
