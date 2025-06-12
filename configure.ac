@@ -19,7 +19,7 @@ dnl	to configure the system for the local environment.
 # so that we create the export library with the dll.
 #-----------------------------------------------------------------------
 
-AC_INIT([dedup],[0.9.6])
+AC_INIT([dedup],[0.9.7])
 
 #--------------------------------------------------------------------
 # Call TEA_INIT as the first TEA_ macro to set up initial vars.
@@ -241,7 +241,7 @@ AC_SUBST(DEDUP_LIBRARY)
 AC_SUBST(DEDUP_STUBLIB)
 AC_SUBST(DEDUP_HEADER)
 
-AC_CONFIG_FILES([Makefile teabase/Makefile pkgIndex.tcl dedupConfig.sh generic/dedup.h])
+AC_CONFIG_FILES([Makefile Makefile.teabase pkgIndex.tcl dedupConfig.sh generic/dedup.h])
 
 #--------------------------------------------------------------------
 # Finally, substitute all of the various values into the files

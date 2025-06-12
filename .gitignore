@@ -15,3 +15,4 @@ doc/dedup.n
 *~
 *.gcda
 *.gcno
+Makefile.teabase
