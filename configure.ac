@@ -19,15 +19,13 @@ dnl	to configure the system for the local environment.
 # so that we create the export library with the dll.
 #-----------------------------------------------------------------------
 
-AC_INIT([dedup],[0.9.5])
+AC_INIT([dedup],[0.9.6])
 
 #--------------------------------------------------------------------
 # Call TEA_INIT as the first TEA_ macro to set up initial vars.
 # This will define a ${TEA_PLATFORM} variable == "unix" or "windows"
 # as well as PKG_LIB_FILE and PKG_STUB_LIB_FILE.
 #--------------------------------------------------------------------
-
-touch generic/dedup.h
 
 TEA_INIT()
 
@@ -81,7 +79,7 @@ CHECK_GLIBC
 #-----------------------------------------------------------------------
 
 TEA_ADD_SOURCES([dedup.c dedupStubInit.c])
-TEA_ADD_HEADERS([generic/dedup.h generic/dedupDecls.h])
+TEA_ADD_HEADERS([generic/dedupDecls.h])
 TEA_ADD_INCLUDES([])
 TEA_ADD_LIBS([$EXTRA_LIBS])
 TEA_ADD_CFLAGS([])

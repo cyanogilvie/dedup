@@ -230,6 +230,8 @@ install-libraries: libraries
 	    echo "Installing $(srcdir)/$$i" ; \
 		$(INSTALL_DATA) $(srcdir)/$$i $(DESTDIR)$(pkglibdir); \
 	done;
+	@echo "Installing generated header generic/dedup.h"
+	@$(INSTALL_DATA) generic/dedup.h $(DESTDIR)$(pkglibdir)
 
 #========================================================================
 # Install documentation.  Unix manpages should go in the $(mandir)
