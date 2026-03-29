@@ -291,6 +291,7 @@ void Dedup_Stats(Tcl_DString* ds, struct dedup_pool* p) //<<<
 
 static OBJCMD(setdir_cmd) //<<<
 {
+	(void)cdata;
 	int				code = TCL_OK;
 	Tcl_Obj*		buildheader = NULL;
 	Tcl_Obj*		generic = NULL;
@@ -345,6 +346,7 @@ static void delete_poolinst(ClientData cdata) //<<<
 //>>>
 static OBJCMD(poolinst_cmd) //<<<
 {
+	(void)cdata;
 	int					code = TCL_OK;
 	static const char*	ops[] = {
 		"get",
@@ -401,6 +403,7 @@ done:
 //>>>
 static OBJCMD(pool_cmd) //<<<
 {
+	(void)cdata;
 	int					code = TCL_OK;
 	struct dedup_pool*	p = NULL;
 

@@ -1,16 +1,16 @@
-% dedup(3) 0.9 | Tcl\_Obj value deduplicator
+% @PACKAGE_NAME@(3) 0.9 | Tcl\_Obj value deduplicator
 % Cyan Ogilvie
-% 0.9
+% @PACKAGE_VERSION@
 
 
 # NAME
 
-dedup - Smart value deduplicator
+@PACKAGE_NAME@ - Smart value deduplicator
 
 
 # SYNOPSIS
 
-**package require dedup** ?0.9?
+**package require @PACKAGE_NAME@** ?@PACKAGE_VERSION@?
 
 const char \***Dedup_InitStubs**(*interp*)
 

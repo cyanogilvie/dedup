@@ -241,7 +241,7 @@ AC_SUBST(DEDUP_LIBRARY)
 AC_SUBST(DEDUP_STUBLIB)
 AC_SUBST(DEDUP_HEADER)
 
-AC_CONFIG_FILES([Makefile Makefile.teabase pkgIndex.tcl dedupConfig.sh generic/dedup.h])
+AC_CONFIG_FILES([Makefile Makefile.teabase pkgIndex.tcl dedupConfig.sh generic/dedup.h doc/dedup.md])
 
 #--------------------------------------------------------------------
 # Finally, substitute all of the various values into the files

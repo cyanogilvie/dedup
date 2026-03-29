@@ -247,17 +247,14 @@ install-doc: doc
 	done
 
 test: binaries libraries
-	$(TCLSH) `@CYGPATH@ $(srcdir)/tests/all.tcl` $(TESTFLAGS) \
-	    -load "package ifneeded $(PACKAGE_NAME) $(PACKAGE_VERSION) [list apply {{} { \
-		load `@CYGPATH@ ./$(PKG_LIB_FILE)` $(PACKAGE_NAME); ::dedup::_setdir `@CYGPATH@ $(srcdir)` \
-		}}]"
+	$(TCLSH) `@CYGPATH@ $(srcdir)/tests/all.tcl` $(TESTFLAGS) -load $(PACKAGE_LOAD)
 
 shell: binaries libraries
 	@$(TCLSH) $(SCRIPT)
 
 vim-gdb: binaries libraries
 	#$(TCLSH_ENV) $(PKG_ENV) vim -c "set number" -c "set foldlevel=100" -c "Termdebug -ex layout\ asm -ex layout\ regs -ex focus\ cmd --args $(TCLSH_PROG) tests/all.tcl $(TESTFLAGS) -singleproc 1 -load package\ ifneeded\ $(PACKAGE_NAME)\ $(PACKAGE_VERSION)\ [list\ load\ `@CYGPATH@ $(PKG_LIB_FILE)`\ [string\ totitle\ $(PACKAGE_NAME)]]" generic/hyprdom.c
-	$(TCLSH_ENV) $(PKG_ENV) vim -c "set number" -c "set mouse=a" -c "set foldlevel=100" -c "Termdebug -ex set\ print\ pretty\ on --args $(TCLSH_PROG) tests/all.tcl $(TESTFLAGS) -singleproc 1 -load package\ ifneeded\ $(PACKAGE_NAME)\ $(PACKAGE_VERSION)\ [list\ apply\ {{}\ {load\ `@CYGPATH@ ./$(PKG_LIB_FILE)`\ [string\ totitle\ $(PACKAGE_NAME)];\ ::dedup::_setdir\ `@CYGPATH@ $(srcdir)`}}]" generic/dedup.c
+	$(TCLSH_ENV) $(PKG_ENV) vim -c "set number" -c "set mouse=a" -c "set foldlevel=100" -c "Termdebug -ex set\ print\ pretty\ on --args $(TCLSH_PROG) tests/all.tcl $(TESTFLAGS) -singleproc 1 -load $(PACKAGE_LOAD_EMBED)}}]" generic/dedup.c
 
 
 vim-core:

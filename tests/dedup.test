@@ -3,7 +3,7 @@ if {[lsearch [namespace children] ::tcltest] == -1} {
     namespace import ::tcltest::*
 }
 
-package require dedup
+::tcltest::loadTestedCommands
 
 proc ac_config key { #<<<
 	global _ac_config_cache
