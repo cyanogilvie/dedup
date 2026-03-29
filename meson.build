@@ -1,5 +1,5 @@
 project('dedup', 'c',
-  version:          '0.9.10',
+  version:          '0.9.12',
   default_options:  ['c_std=c11', 'warning_level=3', 'werror=true'],
   meson_version:    '>=1.3.0',
 )
@@ -32,17 +32,19 @@ pkg_sources = files(
 
 subdir('teabase/init')
 
-deps += declare_dependency(
-  sources: custom_target('genstubs',
-    output: ['dedupStubInit.c', 'dedupDecls.h'],
-    command: [
-      tclsh,
-      meson.project_source_root() / 'teabase/tools/genStubs.tcl',
-      meson.project_build_root(),
-      meson.project_source_root() / 'generic/dedup.decls',
-    ],
-  ),
+genstubs = custom_target('genstubs',
+  output: ['dedupStubInit.c', 'dedupDecls.h'],
+  command: [
+    tclsh,
+    meson.project_source_root() / 'teabase/tools/genStubs.tcl',
+    meson.project_build_root(),
+    meson.project_source_root() / 'generic/dedup.decls',
+  ],
+  install: true,
+  install_dir: [false, pkg_dir],
 )
+
+deps += declare_dependency(sources: genstubs)
 
 conf.set_quoted('DEDUP_LIBRARY_PATH_INSTALL', pkg_dir)
 conf.set_quoted('DEDUP_INCLUDE_PATH_INSTALL', pkg_dir)
@@ -71,6 +73,29 @@ configure_file(
   input:          'dedupConfig.sh.in',
   output:         '@BASENAME@',
   install_dir:    pkg_dir,
+)
+
+# Build and install stubs library for dependent extensions
+stubs_lib = static_library(meson.project_name() + 'stub',
+  'generic/dedupStubLib.c',
+  dependencies: deps,
+  include_directories: inc,
+  install: true,
+  install_dir: pkg_dir,
+)
+
+# Generate relocatable pkg-config file
+pc_conf = configuration_data()
+pc_conf.set('PACKAGE_NAME', meson.project_name())
+pc_conf.set('PACKAGE_VERSION', meson.project_version())
+pc_conf.set('PKG_DIR_BASENAME', meson.project_name() + '-' + meson.project_version())
+pc_conf.set('STUBLIB', meson.project_name() + 'stub')
+
+configure_file(
+  input:          'dedup.pc.in',
+  output:         meson.project_name() + '.pc',
+  configuration:  pc_conf,
+  install_dir:    get_option('libdir') / 'pkgconfig',
 )
 
 test_conf = configuration_data()
