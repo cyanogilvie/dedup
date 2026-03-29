@@ -1,5 +1,5 @@
 project('dedup', 'c',
-  version:          '0.9.9',
+  version:          '0.9.10',
   default_options:  ['c_std=c11', 'warning_level=3', 'werror=true'],
   meson_version:    '>=1.3.0',
 )
@@ -63,7 +63,7 @@ pkg_sources += configure_file(
   configuration:  teaconf,
   input:          'generic/dedup.h.in',
   output:         '@BASENAME@',
-  install_dir:    'include',
+  install_dir:    pkg_dir,
 )
 
 configure_file(
