@@ -2,6 +2,11 @@
 #define _DEDUP_H
 #include <tcl.h>
 
+/* Tcl_Size compat for Tcl 8 */
+#ifndef TCL_SIZE_MAX
+typedef int Tcl_Size;
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -24,7 +29,7 @@ extern const char* DedupInitializeStubs(Tcl_Interp* interp);
 
 #include "dedupDecls.h"
 
-EXTERN int Dedup_Init _ANSI_ARGS_((Tcl_Interp * interp));
+EXTERN int Dedup_Init(Tcl_Interp *interp);
 
 #ifdef __cplusplus
 }

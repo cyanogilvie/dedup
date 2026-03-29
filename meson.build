@@ -1,5 +1,5 @@
 project('dedup', 'c',
-  version:          '0.9.7',
+  version:          '0.9.8',
   default_options:  ['c_std=c11', 'warning_level=3', 'werror=true'],
   meson_version:    '>=1.3.0',
 )
@@ -26,11 +26,9 @@ add_project_arguments('-DHAVE_CONFIG_H', language: 'c')
 deps = []
 inc = []
 
-#pkg_sources = files(
-#  'generic/dedup.c',
-#  'generic/dedupStubInit.c',
-#)
-pkg_sources = []
+pkg_sources = files(
+  'generic/dedup.c',
+)
 
 subdir('teabase/init')
 
@@ -44,22 +42,6 @@ deps += declare_dependency(
       meson.project_source_root() / 'generic/dedup.decls',
     ],
   ),
-  dependencies: [
-    declare_dependency(
-      sources: [
-        configure_file(
-          input: 'generic/dedupDecls.h',
-          output: 'dedupDecls.h',
-          copy: true,
-        ),
-        configure_file(
-          input: 'generic/dedupStubInit.c',
-          output: 'dedupStubInit.c',
-          copy: true,
-        ),
-      ],
-    ),
-  ],
 )
 
 conf.set_quoted('DEDUP_LIBRARY_PATH_INSTALL', pkg_dir)
@@ -89,6 +71,16 @@ configure_file(
   input:          'dedupConfig.sh.in',
   output:         '@BASENAME@',
   install_dir:    pkg_dir,
+)
+
+test_conf = configuration_data()
+test_conf.set('DEDUP_LIBRARY', meson.project_name())
+test_conf.set('DEDUP_STUBLIB', meson.project_name() + 'stub')
+
+configure_file(
+  input:          'tests/test_config.tcl.in',
+  output:         'test_config.tcl',
+  configuration:  test_conf,
 )
 
 subdir('doc')

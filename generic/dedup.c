@@ -6,12 +6,12 @@ Tcl_Mutex	g_config_mutex = NULL;
 Tcl_Obj*	g_packagedir = NULL;
 Tcl_Obj*	g_includedir = NULL;
 static Tcl_Config cfg[] = {
-	{"libdir,runtime",			DEDUP_LIBRARY_PATH_INSTALL},	// Overwritten by _setdir, must be first
-	{"includedir,runtime",		DEDUP_INCLUDE_PATH_INSTALL},	// Overwritten by _setdir, must be second
-	{"packagedir,runtime",		DEDUP_PACKAGE_PATH_INSTALL},	// Overwritten by _setdir, must be third
-	{"libdir,install",			DEDUP_LIBRARY_PATH_INSTALL},
-	{"includedir,install",		DEDUP_INCLUDE_PATH_INSTALL},
-	{"packagedir,install",		DEDUP_PACKAGE_PATH_INSTALL},
+	{"libdir,runtime",			DEDUP_LIBRARY_PATH_INSTALL},	// [0] Overwritten by _setdir
+	{"includedir,runtime",		DEDUP_INCLUDE_PATH_INSTALL},	// [1] Overwritten by _setdir
+	{"packagedir,runtime",		DEDUP_PACKAGE_PATH_INSTALL},	// [2] Overwritten by _setdir
+	{"libdir,install",			DEDUP_LIBRARY_PATH_INSTALL},	// [3] Overwritten by _setdir
+	{"includedir,install",		DEDUP_INCLUDE_PATH_INSTALL},	// [4] Overwritten by _setdir
+	{"packagedir,install",		DEDUP_PACKAGE_PATH_INSTALL},	// [5] Overwritten by _setdir
 	{"library",					DEDUP_LIBRARY},
 	{"stublib",					DEDUP_STUBLIB},
 	{"header",					DEDUP_HEADER},
@@ -182,7 +182,7 @@ void Dedup_FreePool(struct dedup_pool* p) //<<<
 }
 
 //>>>
-Tcl_Obj* Dedup_NewStringObj(struct dedup_pool* p, const char* bytes, int length) //<<<
+Tcl_Obj* Dedup_NewStringObj(struct dedup_pool* p, const char* bytes, Tcl_Size length) //<<<
 {
 	char				buf[STRING_DEDUP_MAX + 1];
 	const char*			keyname;
@@ -268,7 +268,7 @@ void Dedup_Stats(Tcl_DString* ds, struct dedup_pool* p) //<<<
 		e = &p->kc_entries[idx];
 
 		Tcl_DStringAppend(ds, "refCount: ", -1);
-		numbuf_len = sprintf(numbuf, "%4d", e->val->refCount);
+		numbuf_len = sprintf(numbuf, "%4" TCL_SIZE_MODIFIER "d", e->val->refCount);
 		Tcl_DStringAppend(ds, numbuf, numbuf_len);
 		Tcl_DStringAppend(ds, ", heat: ", -1);
 		numbuf_len = sprintf(numbuf, "%4d", e->hits);
@@ -316,9 +316,14 @@ static OBJCMD(setdir_cmd) //<<<
 		replace_tclobj(&g_includedir, g_packagedir);
 	}
 
-	cfg[0].value = Tcl_GetString(g_packagedir);		// Under global ref
-	cfg[1].value = Tcl_GetString(g_includedir);		// Under global ref
-	cfg[2].value = Tcl_GetString(g_packagedir);		// Under global ref
+	// Tcl_GetString pointers are stable because g_packagedir / g_includedir
+	// are held under global refs for the lifetime of the package (until unload).
+	cfg[0].value = Tcl_GetString(g_packagedir);		// libdir,runtime
+	cfg[1].value = Tcl_GetString(g_includedir);		// includedir,runtime
+	cfg[2].value = Tcl_GetString(g_packagedir);		// packagedir,runtime
+	cfg[3].value = Tcl_GetString(g_packagedir);		// libdir,install
+	cfg[4].value = Tcl_GetString(g_packagedir);		// includedir,install
+	cfg[5].value = Tcl_GetString(g_packagedir);		// packagedir,install
 
 	Tcl_RegisterConfig(interp, PACKAGE_NAME, cfg, "utf-8");
 
@@ -378,7 +383,7 @@ static OBJCMD(poolinst_cmd) //<<<
 					goto done;
 				}
 
-				int			len;
+				Tcl_Size	len;
 				const char*	str = Tcl_GetStringFromObj(objv[A_STR], &len);
 
 				Tcl_SetObjResult(interp, Dedup_NewStringObj(p, str, len));

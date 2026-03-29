@@ -3,6 +3,8 @@ configure
 pkgIndex.tcl
 dedupConfig.sh
 generic/dedup.h
+generic/dedupDecls.h
+generic/dedupStubInit.c
 autom4te.cache
 config.log
 config.status

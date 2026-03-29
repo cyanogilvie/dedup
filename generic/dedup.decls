@@ -8,7 +8,7 @@ declare 1 generic {
 	void Dedup_FreePool(struct dedup_pool* p)
 }
 declare 2 generic {
-	Tcl_Obj* Dedup_NewStringObj(struct dedup_pool* p, const char* bytes, int length)
+	Tcl_Obj* Dedup_NewStringObj(struct dedup_pool* p, const char* bytes, Tcl_Size length)
 }
 declare 3 generic {
 	void Dedup_Stats(Tcl_DString* ds, struct dedup_pool* p)

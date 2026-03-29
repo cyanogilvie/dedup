@@ -8,14 +8,26 @@ if {[lsearch [namespace children] ::tcltest] == -1} {
 proc ac_config key { #<<<
 	global _ac_config_cache
 	if {![info exists _ac_config_cache($key)]} {
-		set _ac_config_cache($key) [exec echo @$key@ | ./config.status --file=-]
+		if {[file executable ./config.status]} {
+			set _ac_config_cache($key) [exec echo @$key@ | ./config.status --file=-]
+		} else {
+			set _ac_config_cache($key) "N/A"
+		}
 	}
 	set _ac_config_cache($key)
 }
 
+::tcltest::testConstraint config.status [file executable ./config.status]
+
+if {[file exists [file join [pwd] test_config.tcl]]} {
+	source [file join [pwd] test_config.tcl]
+	set _meson_runtime_dir [file normalize [file dirname [lindex [lsearch -inline -index 1 [info loaded {}] Dedup] 0]]]
+}
+::tcltest::testConstraint meson [info exists _meson_config]
+
 #>>>
 
-test config-1.1 {Embedded config} -body { #<<<
+test config-1.1 {Embedded config} -constraints config.status -body { #<<<
 	lmap key [lsort [dedup::pkgconfig list]] {
 		list $key [dedup::pkgconfig get $key]
 	}
@@ -23,20 +35,41 @@ test config-1.1 {Embedded config} -body { #<<<
 	unset -nocomplain key
 } -result [format [list \
 	{header dedup.h} \
-	{includedir,install %2$s} \
+	{includedir,install %1$s} \
 	{includedir,runtime %1$s/generic} \
-	{libdir,install %2$s} \
+	{libdir,install %1$s} \
 	{libdir,runtime %1$s} \
-	{library %3$s} \
-	{packagedir,install %2$s} \
+	{library %2$s} \
+	{packagedir,install %1$s} \
 	{packagedir,runtime %1$s} \
-	{stublib %4$s}\
+	{stublib %3$s}\
 ] \
 	[pwd] \
-	[ac_config DEDUP_PACKAGE_PATH_INSTALL] \
 	[ac_config DEDUP_LIBRARY] \
 	[ac_config DEDUP_STUBLIB] \
 ]
+#>>>
+test config-1.2 {Embedded config (meson)} -constraints meson -body { #<<<
+	lmap key [lsort [dedup::pkgconfig list]] {
+		list $key [dedup::pkgconfig get $key]
+	}
+} -cleanup {
+	unset -nocomplain key
+} -result [if {[info exists _meson_config]} {format [list \
+	{header dedup.h} \
+	{includedir,install %1$s} \
+	{includedir,runtime %1$s} \
+	{libdir,install %1$s} \
+	{libdir,runtime %1$s} \
+	{library %2$s} \
+	{packagedir,install %1$s} \
+	{packagedir,runtime %1$s} \
+	{stublib %3$s}\
+] \
+	$_meson_runtime_dir \
+	$_meson_config(DEDUP_LIBRARY) \
+	$_meson_config(DEDUP_STUBLIB) \
+}]
 #>>>
 test dedup-1.1 {Pool lifecycle} -body { #<<<
 	dedup::_pool foo
