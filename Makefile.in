@@ -470,7 +470,7 @@ uninstall-binaries:
 	done
 
 genstubs: generic/dedup.decls
-	$(TCLSH_PROG) $(TCL_SRC_DIR)/tools/genStubs.tcl generic generic/dedup.decls
+	$(TCLSH_PROG) $(srcdir)/teabase/tools/genStubs.tcl generic generic/dedup.decls
 
 tags:
 	ctags-exuberant generic/*

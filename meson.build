@@ -1,5 +1,5 @@
 project('dedup', 'c',
-  version:          '0.9.12',
+  version:          '0.9.13',
   default_options:  ['c_std=c11', 'warning_level=3', 'werror=true'],
   meson_version:    '>=1.3.0',
 )
@@ -35,7 +35,7 @@ subdir('teabase/init')
 genstubs = custom_target('genstubs',
   output: ['dedupStubInit.c', 'dedupDecls.h'],
   command: [
-    tclsh,
+    build_tclsh,
     meson.project_source_root() / 'teabase/tools/genStubs.tcl',
     meson.project_build_root(),
     meson.project_source_root() / 'generic/dedup.decls',
@@ -68,13 +68,6 @@ pkg_sources += configure_file(
   install_dir:    pkg_dir,
 )
 
-configure_file(
-  configuration:  conf,
-  input:          'dedupConfig.sh.in',
-  output:         '@BASENAME@',
-  install_dir:    pkg_dir,
-)
-
 # Build and install stubs library for dependent extensions
 stubs_lib = static_library(meson.project_name() + 'stub',
   'generic/dedupStubLib.c',
@@ -95,7 +88,7 @@ configure_file(
   input:          'dedup.pc.in',
   output:         meson.project_name() + '.pc',
   configuration:  pc_conf,
-  install_dir:    get_option('libdir') / 'pkgconfig',
+  install_dir:    tcl_dep.get_variable('libdir') / 'pkgconfig',
 )
 
 test_conf = configuration_data()

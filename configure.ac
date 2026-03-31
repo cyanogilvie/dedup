@@ -19,7 +19,7 @@ dnl	to configure the system for the local environment.
 # so that we create the export library with the dll.
 #-----------------------------------------------------------------------
 
-AC_INIT([dedup],[0.9.12])
+AC_INIT([dedup],[0.9.13])
 
 #--------------------------------------------------------------------
 # Call TEA_INIT as the first TEA_ macro to set up initial vars.
@@ -37,6 +37,21 @@ AC_CONFIG_AUX_DIR(tclconfig)
 
 TEA_PATH_TCLCONFIG
 TEA_LOAD_TCLCONFIG
+
+#--------------------------------------------------------------------
+# Determine the name of the tclsh executable early for stubs generation
+#--------------------------------------------------------------------
+
+TEA_PROG_TCLSH
+
+#--------------------------------------------------------------------
+# Generate stubs files if they don't exist (they are no longer checked
+# into the repo, but are needed by the build)
+#--------------------------------------------------------------------
+if test ! -f "${srcdir}/generic/dedupStubInit.c"; then
+    AC_MSG_NOTICE([Generating stubs files...])
+    ${TCLSH_PROG} ${srcdir}/teabase/tools/genStubs.tcl ${srcdir}/generic ${srcdir}/generic/dedup.decls
+fi
 
 #--------------------------------------------------------------------
 # Load the tkConfig.sh file if necessary (Tk extension)
@@ -175,15 +190,6 @@ TEA_ENABLE_SYMBOLS
 
 TEA_MAKE_LIB
 
-#--------------------------------------------------------------------
-# Determine the name of the tclsh and/or wish executables in the
-# Tcl and Tk build directories or the location they were installed
-# into. These paths are used to support running test cases only,
-# the Makefile should not be making use of these paths to generate
-# a pkgIndex.tcl file or anything else at extension build time.
-#--------------------------------------------------------------------
-
-TEA_PROG_TCLSH
 #TEA_PROG_WISH
 
 #--------------------------------------------------------------------
