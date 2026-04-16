@@ -298,11 +298,12 @@ static OBJCMD(setdir_cmd) //<<<
 	Tcl_Obj*		h = NULL;
 	Tcl_StatBuf*	stat = NULL;
 
-	CHECK_ARGS(1, "dir");
+	enum {A_cmd, A_DIR, A_objc};
+	CHECK_ARGS("dir");
 
 	Tcl_MutexLock(&g_config_mutex);
 
-	replace_tclobj(&g_packagedir, Tcl_FSGetNormalizedPath(interp, objv[1]));
+	replace_tclobj(&g_packagedir, Tcl_FSGetNormalizedPath(interp, objv[A_DIR]));
 
 	replace_tclobj(&generic,	Tcl_NewStringObj("generic", -1));
 	replace_tclobj(&h,			Tcl_NewStringObj("dedup.h", -1));
@@ -365,23 +366,15 @@ static OBJCMD(poolinst_cmd) //<<<
 	int					op;
 	struct dedup_pool*	p = cdata;
 
-	if (objc < 2)
-		CHECK_ARGS(1, "op arg...");
+	enum {A_cmd, A_OP, A_args};
+	CHECK_MIN_ARGS("op arg...");
 
-	TEST_OK_LABEL(done, code, Tcl_GetIndexFromObj(interp, objv[1], ops, "op", TCL_EXACT, &op));
+	TEST_OK_LABEL(done, code, Tcl_GetIndexFromObj(interp, objv[A_OP], ops, "op", TCL_EXACT, &op));
 	switch (op) {
 		case POOLINST_GET:
 			{
-				enum args {
-					A_STR=2,
-					A_objc
-				};
-
-				if (objc != A_objc) {
-					Tcl_WrongNumArgs(interp, 2, objv, "str");
-					code = TCL_ERROR;
-					goto done;
-				}
+				enum args {A_cmd=1, A_STR, A_objc};
+				CHECK_ARGS_LABEL(done, code, "str");
 
 				Tcl_Size	len;
 				const char*	str = Tcl_GetStringFromObj(objv[A_STR], &len);

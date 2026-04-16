@@ -2,9 +2,8 @@
 #define _DEDUP_H
 #include <tcl.h>
 
-/* Tcl_Size compat for Tcl 8 */
-#ifndef TCL_SIZE_MAX
-typedef int Tcl_Size;
+#if HAVE_CONFIG_H
+# include <config.h>
 #endif
 
 #ifdef __cplusplus
