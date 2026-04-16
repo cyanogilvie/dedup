@@ -40,7 +40,7 @@ genstubs = custom_target('genstubs',
     meson.project_build_root(),
     meson.project_source_root() / 'generic/dedup.decls',
   ],
-  install: true,
+  install: not meson.is_subproject(),
   install_dir: [false, pkg_dir],
 )
 
@@ -66,6 +66,7 @@ pkg_sources += configure_file(
   input:          'generic/dedup.h.in',
   output:         '@BASENAME@',
   install_dir:    pkg_dir,
+  install:        not meson.is_subproject(),
 )
 
 # Build and install stubs library for dependent extensions
@@ -73,7 +74,7 @@ stubs_lib = static_library(meson.project_name() + 'stub',
   'generic/dedupStubLib.c',
   dependencies: deps,
   include_directories: inc,
-  install: true,
+  install:     not meson.is_subproject(),
   install_dir: pkg_dir,
 )
 
@@ -88,6 +89,7 @@ configure_file(
   input:          'dedup.pc.in',
   output:         meson.project_name() + '.pc',
   configuration:  pc_conf,
+  install:        not meson.is_subproject(),
   install_dir:    tcl_dep.get_variable('libdir') / 'pkgconfig',
 )
 
