@@ -1,4 +1,5 @@
 pkg_dir=${pcfiledir}/../@PKG_DIR_BASENAME@
+tcl_pkg_dir=${pkg_dir}
 
 Name: @PACKAGE_NAME@
 Description: String deduplication for Tcl
