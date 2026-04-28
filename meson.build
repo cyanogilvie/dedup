@@ -1,5 +1,5 @@
 project('dedup', 'c',
-  version:          '0.9.14',
+  version:          '0.9.15',
   default_options:  ['c_std=c11', 'warning_level=3', 'werror=true'],
   meson_version:    '>=1.3.0',
 )
@@ -49,7 +49,11 @@ deps += declare_dependency(sources: genstubs)
 conf.set_quoted('DEDUP_LIBRARY_PATH_INSTALL', pkg_dir)
 conf.set_quoted('DEDUP_INCLUDE_PATH_INSTALL', pkg_dir)
 conf.set_quoted('DEDUP_PACKAGE_PATH_INSTALL', pkg_dir)
-conf.set_quoted('DEDUP_LIBRARY', meson.project_name())
+if tclver_major.to_int() >= 9
+  conf.set_quoted('DEDUP_LIBRARY', 'tcl9' + meson.project_name())
+else
+  conf.set_quoted('DEDUP_LIBRARY', meson.project_name())
+endif
 conf.set_quoted('DEDUP_STUBLIB', meson.project_name() + 'stub')
 conf.set_quoted('DEDUP_HEADER', 'dedup.h')
 conf.set_quoted('DEDUP_INCLUDE_SPEC', '-I' + pkg_dir)
@@ -94,7 +98,11 @@ configure_file(
 )
 
 test_conf = configuration_data()
-test_conf.set('DEDUP_LIBRARY', meson.project_name())
+if tclver_major.to_int() >= 9
+  test_conf.set('DEDUP_LIBRARY', 'tcl9' + meson.project_name())
+else
+  test_conf.set('DEDUP_LIBRARY', meson.project_name())
+endif
 test_conf.set('DEDUP_STUBLIB', meson.project_name() + 'stub')
 
 configure_file(
