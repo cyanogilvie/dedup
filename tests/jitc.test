@@ -1,0 +1,45 @@
+if {[lsearch [namespace children] ::tcltest] == -1} {
+    package require tcltest
+    namespace import ::tcltest::*
+}
+
+::tcltest::loadTestedCommands
+
+::tcltest::testConstraint haveJitc	[expr {![catch {package require jitc 0.7.5}]}]
+
+test jitc-1.1 {Test jitc integration} -constraints haveJitc -setup { #<<<
+	set cdef	[list \
+		package	[list dedup [package require dedup]] \
+		code {
+			struct dedup_pool*	g_dedup = NULL;
+
+			INIT {
+				g_dedup = Dedup_NewPool(interp);
+				return TCL_OK;
+			}
+
+			RELEASE {
+				Dedup_FreePool(g_dedup);
+				g_dedup = NULL;
+			}
+
+			OBJCMD(foo) {
+				enum {A_cmd, A_objc};
+				CHECK_ARGS("");
+				Tcl_SetObjResult(interp, Dedup_NewStringObj(g_dedup, "bar", 3));
+				return TCL_OK;
+			}
+		} \
+	]
+} -body {
+	jitc::capply $cdef foo
+} -cleanup {
+	unset -nocomplain cdef
+} -result bar
+#>>>
+
+# cleanup
+::tcltest::cleanupTests
+return
+
+# vim: ft=tcl foldmethod=marker foldmarker=<<<,>>> ts=4 shiftwidth=4

@@ -5,8 +5,8 @@
 #	include <config.h>
 #endif
 
-#include "dedup.h"
-#include "tclstuff.h"
+#include <dedup.h>
+#include <tclstuff.h>
 
 #include <string.h>
 #include <stddef.h>

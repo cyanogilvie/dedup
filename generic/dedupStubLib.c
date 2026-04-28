@@ -7,7 +7,7 @@
 #define USE_TCL_STUBS 1
 #define USE_DEDUP_STUBS 1
 
-#include "dedup.h"
+#include <dedup.h>
 
 MODULE_SCOPE const DedupStubs*	dedupStubsPtr;
 const DedupStubs*					dedupStubsPtr = NULL;

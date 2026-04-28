@@ -1,5 +1,5 @@
 project('dedup', 'c',
-  version:          '0.9.15',
+  version:          '0.9.16',
   default_options:  ['c_std=c11', 'warning_level=3', 'werror=true'],
   meson_version:    '>=1.3.0',
 )
@@ -23,28 +23,20 @@ conf.set10('HAVE___BUILTIN_FFSLL',  cc.has_function('__builtin_ffsll'))
 
 add_project_arguments('-DHAVE_CONFIG_H', language: 'c')
 
-deps = []
-inc = []
-
+deps          = []
+inc           = []
 pkg_sources = files(
   'generic/dedup.c',
 )
 
-subdir('teabase/init')
-
-genstubs = custom_target('genstubs',
-  output: ['dedupStubInit.c', 'dedupDecls.h'],
-  command: [
-    build_tclsh,
-    meson.project_source_root() / 'teabase/tools/genStubs.tcl',
-    meson.project_build_root(),
-    meson.project_source_root() / 'generic/dedup.decls',
-  ],
-  install: not meson.is_subproject(),
-  install_dir: [false, pkg_dir],
+teaconf_files = files(
+  'generic/dedup.h.in'
 )
 
-deps += declare_dependency(sources: genstubs)
+# tea_genstubs: 1st: .decls, 2nd: stublib.c
+tea_genstubs = files('generic/dedup.decls', 'generic/dedupStubLib.c')
+
+subdir('teabase/init')
 
 conf.set_quoted('DEDUP_LIBRARY_PATH_INSTALL', pkg_dir)
 conf.set_quoted('DEDUP_INCLUDE_PATH_INSTALL', pkg_dir)
@@ -64,23 +56,6 @@ conf.set_quoted('DEDUP_STUB_LIB_SPEC', '-L' + pkg_dir)
 conf.set_quoted('DEDUP_BUILD_STUB_LIB_SPEC', '-L' + meson.project_build_root() / 'teabase')
 
 subdir('teabase')
-
-pkg_sources += configure_file(
-  configuration:  teaconf,
-  input:          'generic/dedup.h.in',
-  output:         '@BASENAME@',
-  install_dir:    pkg_dir,
-  install:        not meson.is_subproject(),
-)
-
-# Build and install stubs library for dependent extensions
-stubs_lib = static_library(meson.project_name() + 'stub',
-  'generic/dedupStubLib.c',
-  dependencies: deps,
-  include_directories: inc,
-  install:     not meson.is_subproject(),
-  install_dir: pkg_dir,
-)
 
 # Generate relocatable pkg-config file
 pc_conf = configuration_data()
