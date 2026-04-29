@@ -8,9 +8,12 @@ if {[lsearch [namespace children] ::tcltest] == -1} {
 if {[file exists [file join [pwd] test_config.tcl]]} {
 	source [file join [pwd] test_config.tcl]
 	set _meson_runtime_dir [file normalize [file dirname [lindex [lsearch -inline -index 1 [info loaded {}] Dedup] 0]]]
+	::tcltest::testConstraint have_test_config 1
+} else {
+	::tcltest::testConstraint have_test_config 0
 }
 
-test config-1.2 {Embedded config (meson)} -body { #<<<
+test config-1.2 {Embedded config (meson)} -constraints have_test_config -body { #<<<
 	lmap key [lsort [dedup::pkgconfig list]] {
 		list $key [dedup::pkgconfig get $key]
 	}
