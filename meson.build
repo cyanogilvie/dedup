@@ -1,5 +1,5 @@
 project('dedup', 'c',
-  version:          '0.9.20',
+  version:          '0.9.21',
   default_options:  ['c_std=c11', 'warning_level=3', 'werror=true'],
   meson_version:    '>=1.3.0',
 )
@@ -88,6 +88,10 @@ configure_file(
 )
 
 dedup_dep = declare_dependency(
+  link_with:            stubs_lib,
+  sources:              genstubs[1],
+  include_directories:  inc,
+  compile_args:         '-DUSE_DEDUP_STUBS=1',
   variables: {
     'tcl_pkg_path': fs.parent(pkg_so.full_path()),
     'version':      meson.project_version(),
