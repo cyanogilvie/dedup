@@ -1,5 +1,5 @@
 project('dedup', 'c',
-  version:          '0.9.21',
+  version:          '0.9.22',
   default_options:  ['c_std=c11', 'warning_level=3', 'werror=true'],
   meson_version:    '>=1.3.0',
 )
@@ -69,7 +69,7 @@ configure_file(
   output:         meson.project_name() + '.pc',
   configuration:  pc_conf,
   install:        true,
-  install_tag:    meson.is_subproject() ? 'runtime' : 'deps',
+  install_tag:    meson.is_subproject() ? 'deps' : 'runtime',
   install_dir:    tcl_dep.get_variable('libdir') / 'pkgconfig',
 )
 
