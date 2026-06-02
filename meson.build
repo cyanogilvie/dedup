@@ -1,5 +1,5 @@
 project('dedup', 'c',
-  version:          '0.9.22',
+  version:          '0.9.23',
   default_options:  ['c_std=c11', 'warning_level=3', 'werror=true'],
   meson_version:    '>=1.3.0',
 )
@@ -26,15 +26,15 @@ add_project_arguments('-DHAVE_CONFIG_H', language: 'c')
 deps          = []
 inc           = []
 pkg_sources = files(
-  'generic/dedup.c',
+  'dedup.c',
 )
 
 teaconf_files = files(
-  'generic/dedup.h.in'
+  'dedup.h.in'
 )
 
 # tea_genstubs: 1st: .decls, 2nd: stublib.c
-tea_genstubs = files('generic/dedup.decls', 'generic/dedupStubLib.c')
+tea_genstubs = files('dedup.decls', 'dedupStubLib.c')
 
 subdir('teabase/init')
 
